@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend-service:
+    build: ./backend
+    container_name: job-tracker-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      # Maps local host 'data' directory folder to keep H2 records safe across full container updates
+      - ./backend/data:/app/data
+
+  frontend-service:
+    build: ./frontend
+    container_name: job-tracker-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend-service
