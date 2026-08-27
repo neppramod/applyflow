@@ -4,10 +4,9 @@ import { Job, PaginatedResponse } from './types';
 const API_BASE_URL = '/api/jobs'; 
 
 axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  // If no profile is set, default to "guest_user"
+  const activeProfile = localStorage.getItem('applyflow_profile') || 'guest_user';
+  config.headers['X-Profile-User'] = activeProfile;
   return config;
 }, (error) => Promise.reject(error));
 

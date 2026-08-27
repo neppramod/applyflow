@@ -5,6 +5,7 @@ import com.at.applicationtracker.model.JobStatus;
 import com.at.applicationtracker.model.User;
 import com.at.applicationtracker.repository.JobRepository;
 import com.at.applicationtracker.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,21 +37,28 @@ public class JobController {
     @Autowired
     private UserRepository userRepository;
 
-    // Helper method to safely fallback to a default account if user details are missing or unauthenticated
-    private synchronized User getAuthenticatedOrFallbackUser(UserDetails userDetails) {
-        String username = (userDetails != null) ? userDetails.getUsername() : "guest_user";
+    @Autowired
+    private HttpServletRequest request; // Add this field at the top of your controller class variables
 
-        // 1. Initial look up check
-        Optional<User> existingUser = userRepository.findByUsername(username);
+    private synchronized User getAuthenticatedOrFallbackUser(UserDetails userDetails) {
+        // 1. Read the custom profile user header from the React app frontend
+        String username = request.getHeader("X-Profile-User");
+        if (username == null || username.trim().isEmpty()) {
+            username = "guest_user"; // Safe default fallback
+        }
+
+        final String finalUsername = username.trim();
+
+        // 2. Double-check synchronization to ensure parallel requests don't collide
+        Optional<User> existingUser = userRepository.findByUsername(finalUsername);
         if (existingUser.isPresent()) {
             return existingUser.get();
         }
 
-        // 2. Synchronized double-check block protects against simultaneous parallel threads
         synchronized (this) {
-            return userRepository.findByUsername(username).orElseGet(() -> {
-                User newUser = new User(username, "$2a$10$eCqOOpD7V12.O.Y0E/C0BOe/0WkO46.6m91m9K3g1f9b9M8S8Y8K.");
-                return userRepository.saveAndFlush(newUser); // Force flush to database immediately
+            return userRepository.findByUsername(finalUsername).orElseGet(() -> {
+                User newUser = new User(finalUsername, "$2a$10$eCqOOpD7V12.O.Y0E/C0BOe/0WkO46.6m91m9K3g1f9b9M8S8Y8K.");
+                return userRepository.saveAndFlush(newUser);
             });
         }
     }

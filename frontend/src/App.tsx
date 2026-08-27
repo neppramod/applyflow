@@ -10,6 +10,8 @@ export default function App() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  const [activeUser, setActiveUser] = useState(localStorage.getItem('applyflow_profile') || 'guest_user');
   
   // Pagination & Analytics State Variables
   const [currentPage, setCurrentPage] = useState(0);
@@ -43,6 +45,12 @@ export default function App() {
     } catch (e) {
       console.error("Error reading analytics data", e);
     }
+  };
+
+  const handleProfileChange = (newProfile: string) => {
+    localStorage.setItem('applyflow_profile', newProfile);
+    setActiveUser(newProfile);
+    setCurrentPage(0); // Reset page numbers for the new view layout context
   };
 
   const handleAddJob = async (newJobData: Omit<Job, 'id' | 'status' | 'appliedDate'>) => {
@@ -155,6 +163,34 @@ export default function App() {
           </div>
           
           <div className="flex items-center gap-2">
+            {/* 1. DYNAMIC USER PROFILE DROPDOWN SELECTOR BLOCK */}
+            <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 mr-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 pl-1.5">User:</span>
+              <select
+                value={activeUser}
+                onChange={(e) => {
+                  if (e.target.value === 'NEW_PROFILE') {
+                    const name = prompt("Enter new profile username:");
+                    if (name && name.trim()) handleProfileChange(name.trim());
+                  } else {
+                    handleProfileChange(e.target.value);
+                  }
+                }}
+                className="text-xs font-bold bg-transparent text-gray-700 focus:outline-none cursor-pointer pr-1"
+              >
+                <option value="guest_user">guest_user</option>
+                {activeUser !== 'guest_user' && <option value={activeUser}>{activeUser}</option>}
+                <option value="NEW_PROFILE" className="text-blue-600 font-bold">+ Add Profile...</option>
+              </select>
+            </div>
+
+            {/* 2. DYNAMIC PIPELINE TOTAL METRICS TRACKER BUTTON */}
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold border border-blue-100 rounded-xl px-3 py-2 text-blue-700 bg-blue-50/50 shadow-sm font-semibold">
+              <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+              Total: {jobs.length}
+            </span>
+
+            {/* 3. BULK SPREADSHEET EXPORT OPERATION ACTION BUTTON */}
             <button 
               onClick={handleExport}
               className="inline-flex items-center gap-1.5 text-xs font-bold border border-gray-200 rounded-xl px-3 py-2 text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-all"
