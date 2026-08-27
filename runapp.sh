@@ -1,3 +1,6 @@
 #!/bin/sh
 docker compose down
-docker compose up --build
+
+# ADDED -d to run in the background permanently
+docker compose up --build -d 
+

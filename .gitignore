@@ -1,0 +1,46 @@
+# ====================================================================
+# 📦 ApplyFlow Unified Version Control Ignore Blueprint
+# ====================================================================
+
+# --- 1. Persistent Storage Guards (CRITICAL) ---
+# Prevents exposing your private production H2 database tracking records
+**/data/
+*.db
+*.mv.db
+*.trace.db
+
+# --- 2. Java / Maven Backend Exclusions ---
+**/target/
+**.jar
+**.war
+**.ear
+*.class
+.mtj.tmp/
+
+# --- 3. JavaScript / Frontend Exclusions ---
+**/node_modules/
+**/dist/
+**/.vite/
+.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- 4. IDE & Text Editor Cache Metrics ---
+.idea/
+*.iml
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.classpath
+.project
+.settings/
+.factorypath
+bin/
+
+# --- 5. Operating System Junk File Buffers ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+

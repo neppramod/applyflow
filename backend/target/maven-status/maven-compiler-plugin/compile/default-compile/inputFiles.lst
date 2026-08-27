@@ -1,7 +1,0 @@
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/ApplicationtrackerApplication.java
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/config/SecurityConfig.java
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/controller/JobController.java
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/model/Job.java
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/model/JobStatus.java
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/repository/JobRepository.java
-/home/dell/Documents/Programming/springbootapps/applicationtracker/applicationtracker/src/main/java/com/at/applicationtracker/service/DataSeeder.java

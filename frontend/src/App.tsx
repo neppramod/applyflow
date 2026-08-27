@@ -56,15 +56,18 @@ export default function App() {
     }
   };
 
-  const handleStatusChange = async (id: number, newStatus: Job['status']) => {
-    try {
-      await jobService.updateJobStatus(id, newStatus);
-      loadJobs(currentPage);
-      loadAnalyticsSummary();
-    } catch (error) {
-      console.error("Failed to update status", error);
-    }
-  };
+  const handleStatusChange = async (id: number, newStatus: string) => { // 1. Changed type to string 
+  try {
+    // 2. Cast the incoming string explicitly as your strict Union Type choice
+    const validatedStatus = newStatus as Job['status']; 
+    
+    await jobService.updateJobStatus(id, validatedStatus);
+    loadJobs(currentPage);
+    loadAnalyticsSummary();
+  } catch (error) {
+    console.error("Failed to update status", error);
+  }
+};
 
   const handleDeleteJob = async (id: number) => {
     try {
@@ -75,6 +78,17 @@ export default function App() {
       console.error("Failed to delete job", error);
     }
   };
+
+  const handleUpdateJob = async (id: number, updatedFields: Omit<Job, 'id' | 'status' | 'appliedDate'>) => {
+    try {
+      await jobService.updateJob(id, updatedFields);
+      loadJobs(currentPage);            // Refresh current paginated list table matching row layouts
+      loadAnalyticsSummary();           // Dynamically re-trigger metrics calculation updates
+    } catch (error) {
+      console.error("Failed to update application changes", error);
+    }
+  };
+
 
   // Bulk Data Spreadsheet Handlers
   const handleExport = () => {
@@ -199,18 +213,22 @@ export default function App() {
             </div>
 
             {isLoading ? (
-              <div className="text-center py-10 text-gray-400 text-sm animate-pulse">Syncing pipeline databases...</div>
+              <div className="text-center py-10 text-gray-400 text-sm animate-pulse">
+                Syncing pipeline databases...
+              </div>
             ) : (
               <JobList 
                 jobs={filteredJobs} 
                 onStatusChange={handleStatusChange} 
                 onDeleteJob={handleDeleteJob}
+                onUpdateJob={handleUpdateJob}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={(p) => setCurrentPage(p)}
               />
             )}
           </div>
+
         </div>
       </main>
     </div>

@@ -1,7 +1,0 @@
-com/at/applicationtracker/model/JobStatus.class
-com/at/applicationtracker/config/SecurityConfig.class
-com/at/applicationtracker/ApplicationtrackerApplication.class
-com/at/applicationtracker/repository/JobRepository.class
-com/at/applicationtracker/service/DataSeeder.class
-com/at/applicationtracker/model/Job.class
-com/at/applicationtracker/controller/JobController.class

@@ -24,8 +24,15 @@ export const jobService = {
     return response.data;
   },
 
+  async updateJob(id: number, jobData: Omit<Job, 'id' | 'status' | 'appliedDate'>): Promise<Job> {
+    const response = await axios.put<Job>(`${API_BASE_URL}/${id}`, jobData);
+    return response.data;
+  },
+
   async updateJobStatus(id: number, status: Job['status']): Promise<Job> {
-    const response = await axios.put<Job>(`${API_BASE_URL}/${id}/status`, { status });
+    const response = await axios.put<Job>(`${API_BASE_URL}/${id}/status`, { 
+      status: status 
+    });
     return response.data;
   },
 

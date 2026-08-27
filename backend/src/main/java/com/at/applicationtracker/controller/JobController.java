@@ -99,6 +99,22 @@ public class JobController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job updatedJobDetails) {
+        return repository.findById(id).map(existingJob -> {
+            // Update all editable text fields
+            existingJob.setCompany(updatedJobDetails.getCompany());
+            existingJob.setRole(updatedJobDetails.getRole());
+            existingJob.setLocation(updatedJobDetails.getLocation());
+            existingJob.setLink(updatedJobDetails.getLink());
+            existingJob.setDescription(updatedJobDetails.getDescription());
+
+            // Save and commit changes to H2 file disk
+            Job savedJob = repository.save(existingJob);
+            return ResponseEntity.ok(savedJob);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteJob(@PathVariable Long id) {
         if (!repository.existsById(id)) return ResponseEntity.notFound().build();
